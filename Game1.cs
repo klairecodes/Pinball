@@ -11,8 +11,8 @@ public class Game1 : Game
     Texture2D ballTexture;
     Vector2 ballPosition;
     float ballSpeed;
-    float launchAmount = 0;
-    bool launched = false;
+    float launchAmount;
+    bool launched;
     
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
@@ -32,6 +32,8 @@ public class Game1 : Game
         ballPosition = new Vector2(_graphics.PreferredBackBufferWidth,
             _graphics.PreferredBackBufferHeight);
         ballSpeed = 1000f;
+        launchAmount = 1;
+        launched = false;
 
         base.Initialize();
     }
@@ -91,6 +93,8 @@ public class Game1 : Game
         else if(ballPosition.Y < ballTexture.Height / 2)
         {
             ballPosition.Y = ballTexture.Height / 2;
+            // if you hit a wall, stop the moving of the ball
+            launchAmount = 1;
         }
         
         /* How this is going to work:
@@ -103,9 +107,11 @@ public class Game1 : Game
          */
         
         Keyboard.GetState();
+        Console.WriteLine(launchAmount);
+        Console.WriteLine(ballSpeed);
         if (Keyboard.IsPressed(Keys.Z))
         {
-            launchAmount += 5f;
+            launchAmount *= 1.10f;
         }
 
         var delta = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -114,7 +120,7 @@ public class Game1 : Game
             launched = true;
         }
 
-        if (!Keyboard.IsPressed(Keys.Z) && launched && launchAmount > 0)
+        if (!Keyboard.IsPressed(Keys.Z) && launched && launchAmount > 1)
         {
             ballPosition.Y-= 10;
             launchAmount--;
@@ -124,6 +130,7 @@ public class Game1 : Game
         {
             Console.WriteLine("RESET");
             ballPosition.Y = _graphics.PreferredBackBufferHeight;
+            launchAmount = 1;
         }
 
         base.Update(gameTime);
