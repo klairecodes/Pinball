@@ -105,17 +105,19 @@ public class Game1 : Game
         Keyboard.GetState();
         if (Keyboard.IsPressed(Keys.Z))
         {
-            Console.WriteLine("Z HAS BEEN PRESSED");
             launchAmount += 5f;
         }
-        Console.WriteLine(launchAmount);
 
+        var delta = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
         if (!Keyboard.IsPressed(Keys.Z))
         {
-            Console.WriteLine("Z UNPRESSED");
-            ballPosition.Y -= launchAmount;
             launched = true;
-            launchAmount = 0f;
+        }
+
+        if (!Keyboard.IsPressed(Keys.Z) && launched && launchAmount > 0)
+        {
+            ballPosition.Y-= 10;
+            launchAmount--;
         }
         
         if (kstate.IsKeyDown(Keys.R))
