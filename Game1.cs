@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -9,6 +10,8 @@ public class Game1 : Game
     Texture2D ballTexture;
     Vector2 ballPosition;
     float ballSpeed;
+    float launchAmount = 0;
+    bool launched = false;
     
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
@@ -25,8 +28,8 @@ public class Game1 : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
-        ballPosition = new Vector2(_graphics.PreferredBackBufferWidth / 2,
-            _graphics.PreferredBackBufferHeight / 2);
+        ballPosition = new Vector2(_graphics.PreferredBackBufferWidth,
+            _graphics.PreferredBackBufferHeight);
         ballSpeed = 1000f;
 
         base.Initialize();
@@ -40,6 +43,10 @@ public class Game1 : Game
         ballTexture = Content.Load<Texture2D>("ball");
     }
 
+    protected void FixedUpdate(GameTime gameTime)
+    {
+        ;
+    }
     protected override void Update(GameTime gameTime)
     {
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -86,7 +93,37 @@ public class Game1 : Game
         {
             ballPosition.Y = ballTexture.Height / 2;
         }
+        
+        /* How this is going to work:
+         Press Z for n time
+         n = amount of time pressed
+         Release Z
+         Ball launches to position
+         Ball stops*
+         Z is now ignored)         
+         */
+        
 
+        if (kstate.IsKeyDown(Keys.Z))
+        {
+            // launchAmount += 10 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            launchAmount += 0.1f;
+        }
+        Console.WriteLine(launchAmount);
+
+        Keyboard.GetState();
+        if (!Keyboard.HasBeenPressed(Keys.Z))
+        {
+            if (kstate.IsKeyUp(Keys.Z) && !launched)
+            {
+                ballPosition.Y -= launchAmount;
+                launched = true;
+            }
+        }
+        if (kstate.IsKeyDown(Keys.R))
+        {
+            ballPosition.Y = _graphics.PreferredBackBufferHeight;
+        }
 
         base.Update(gameTime);
     }
