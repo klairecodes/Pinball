@@ -7,6 +7,7 @@ namespace Pinball;
 
 public class Game1 : Game
 {
+    private float fixedUpdateDelta = (int)(1000 / (float)60); // 60 FPS
     Texture2D ballTexture;
     Vector2 ballPosition;
     float ballSpeed;
@@ -43,11 +44,12 @@ public class Game1 : Game
         ballTexture = Content.Load<Texture2D>("ball");
     }
 
+    /// <summary>
+    /// Exists to limit the running speed of the game to actual time, not the machine
+    /// Thanks Lily <3
+    /// </summary>
+    /// <param name="gameTime"></param>
     protected void FixedUpdate(GameTime gameTime)
-    {
-        ;
-    }
-    protected override void Update(GameTime gameTime)
     {
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
@@ -126,6 +128,14 @@ public class Game1 : Game
         }
 
         base.Update(gameTime);
+    }
+    protected override void Update(GameTime gameTime)
+    {
+        // Check time to create a reset
+        if (gameTime.ElapsedGameTime.Milliseconds - gameTime.TotalGameTime.Milliseconds < fixedUpdateDelta)
+        {
+            FixedUpdate(gameTime);
+        }
     }
 
     protected override void Draw(GameTime gameTime)
