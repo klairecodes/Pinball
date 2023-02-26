@@ -51,9 +51,6 @@ public class Game1 : Game
     /// <param name="gameTime"></param>
     protected void FixedUpdate(GameTime gameTime)
     {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
-
         // TODO: Add your update logic here
         // Arrow Key Controls
         var kstate = Keyboard.GetState();
@@ -62,7 +59,7 @@ public class Game1 : Game
             ballPosition.Y -= ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
-        if(kstate.IsKeyDown(Keys.Down))
+        if (kstate.IsKeyDown(Keys.Down))
         {
             ballPosition.Y += ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
@@ -105,25 +102,25 @@ public class Game1 : Game
          Z is now ignored)         
          */
         
-
-        if (kstate.IsKeyDown(Keys.Z))
+        Keyboard.GetState();
+        if (Keyboard.IsPressed(Keys.Z))
         {
-            // launchAmount += 10 * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            launchAmount += 0.1f;
+            Console.WriteLine("Z HAS BEEN PRESSED");
+            launchAmount += 5f;
         }
         Console.WriteLine(launchAmount);
 
-        Keyboard.GetState();
-        if (!Keyboard.HasBeenPressed(Keys.Z))
+        if (!Keyboard.IsPressed(Keys.Z))
         {
-            if (kstate.IsKeyUp(Keys.Z) && !launched)
-            {
-                ballPosition.Y -= launchAmount;
-                launched = true;
-            }
+            Console.WriteLine("Z UNPRESSED");
+            ballPosition.Y -= launchAmount;
+            launched = true;
+            launchAmount = 0f;
         }
+        
         if (kstate.IsKeyDown(Keys.R))
         {
+            Console.WriteLine("RESET");
             ballPosition.Y = _graphics.PreferredBackBufferHeight;
         }
 
@@ -131,6 +128,9 @@ public class Game1 : Game
     }
     protected override void Update(GameTime gameTime)
     {
+        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            Exit();
+
         // Check time to create a reset
         if (gameTime.ElapsedGameTime.Milliseconds - gameTime.TotalGameTime.Milliseconds < fixedUpdateDelta)
         {
