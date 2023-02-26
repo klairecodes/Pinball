@@ -8,8 +8,12 @@ namespace Pinball;
 public class Game1 : Game
 {
     private float fixedUpdateDelta = (int)(1000 / (float)60); // 60 FPS
+    Texture2D wallpaperTexture;
     Texture2D ballTexture;
+    Texture2D brickTexture;
+    Vector2 wallpaperPosition;
     Vector2 ballPosition;
+    Vector2 brickPosition;
     float ballSpeed;
     float launchAmount;
     bool launched;
@@ -29,8 +33,12 @@ public class Game1 : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
+        wallpaperPosition = new Vector2(_graphics.PreferredBackBufferWidth,
+            _graphics.PreferredBackBufferHeight);
         ballPosition = new Vector2(_graphics.PreferredBackBufferWidth,
             _graphics.PreferredBackBufferHeight);
+        brickPosition = new Vector2(_graphics.PreferredBackBufferWidth,
+            0);
         ballSpeed = 1000f;
         launchAmount = 1;
         launched = false;
@@ -43,7 +51,9 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // TODO: use this.Content to load your game content here
+        wallpaperTexture = Content.Load<Texture2D>("concrete-background");
         ballTexture = Content.Load<Texture2D>("ball");
+        brickTexture = Content.Load<Texture2D>("single-brick");
     }
 
     /// <summary>
@@ -154,6 +164,17 @@ public class Game1 : Game
         // TODO: Add your drawing code here
         _spriteBatch.Begin();
         _spriteBatch.Draw(
+            wallpaperTexture,
+            wallpaperPosition,
+            null,
+            Color.White,
+            0f,
+            new Vector2(wallpaperTexture.Width, wallpaperTexture.Height),
+            Vector2.One,
+            SpriteEffects.None,
+            0f
+        );
+        _spriteBatch.Draw(
             ballTexture,
             ballPosition,
             null,
@@ -164,6 +185,18 @@ public class Game1 : Game
             SpriteEffects.None,
             0f
         );
+        _spriteBatch.Draw(
+            brickTexture,
+            brickPosition,
+            null,
+            Color.White,
+            0f,
+            new Vector2(brickTexture.Width / 2, brickTexture.Height / 2),
+            Vector2.One,
+            SpriteEffects.None,
+            0f
+        );
+        
             _spriteBatch.End();
 
         base.Draw(gameTime);
